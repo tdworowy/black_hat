@@ -1,0 +1,1 @@
+code examples based  on book: Black Hat Go: Go Programming For Hackers and Pentesters by Tom Steele, Chris Patten and Dan Kottmann

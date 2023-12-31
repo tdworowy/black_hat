@@ -1,0 +1,5 @@
+go run
+go built
+go fmt
+go mod init <module-name> 
+golint
