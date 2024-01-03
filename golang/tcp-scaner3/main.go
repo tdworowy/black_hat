@@ -11,11 +11,13 @@ import (
 
 func worker(host string, ports, results chan int) {
 	for p := range ports {
+		//	fmt.Printf(fmt.Sprintf("Check port: %d\n", p))
 		conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", host, p))
 		if err != nil {
 			results <- 0
 			continue
 		}
+
 		conn.Close()
 		results <- p
 	}
@@ -28,7 +30,7 @@ func main() {
 		fmt.Printf("usage: <host> <start port>-<end port>")
 		os.Exit(0)
 	}
-	portsChan := make(chan int, 300)
+	portsChan := make(chan int, 10)
 	resultsChan := make(chan int)
 
 	host := args[0]
@@ -50,12 +52,12 @@ func main() {
 	}
 
 	go func() {
-		for i := startPort; i < endPort; i++ {
+		for i := startPort; i <= endPort; i++ {
 			portsChan <- i
 		}
 	}()
 
-	for i := startPort; i < endPort; i++ {
+	for i := startPort; i <= endPort; i++ {
 		port := <-resultsChan
 		if port != 0 {
 			openPorts = append(openPorts, port)

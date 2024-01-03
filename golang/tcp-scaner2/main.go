@@ -21,7 +21,7 @@ func worker(ports, results chan int) {
 func main() {
 	ports := make(chan int, 100)
 	results := make(chan int)
-	var open_ports []int
+	var openPorts []int
 
 	for i := 0; i < cap(ports); i++ {
 		go worker(ports, results)
@@ -36,14 +36,14 @@ func main() {
 	for i := 0; i < 1024; i++ {
 		port := <-results
 		if port != 0 {
-			open_ports = append(open_ports, port)
+			openPorts = append(openPorts, port)
 		}
 	}
 
 	close(ports)
 	close(results)
-	sort.Ints(open_ports)
-	for _, port := range open_ports {
+	sort.Ints(openPorts)
+	for _, port := range openPorts {
 		fmt.Printf("%d open\n", port)
 	}
 }
