@@ -28,44 +28,44 @@ func main() {
 		fmt.Printf("usage: <host> <start port>-<end port>")
 		os.Exit(0)
 	}
-	ports_chan := make(chan int, 300)
-	results_chan := make(chan int)
+	portsChan := make(chan int, 300)
+	resultsChan := make(chan int)
 
 	host := args[0]
 	ports := strings.Split(args[1], "-")
-	start_port, start_err := strconv.Atoi(ports[0])
-	if start_err != nil {
+	startPort, startErr := strconv.Atoi(ports[0])
+	if startErr != nil {
 		fmt.Printf("start port is not a number")
-		panic(start_err)
+		panic(startErr)
 	}
-	end_port, end_err := strconv.Atoi(ports[1])
-	if end_err != nil {
+	endPort, endErr := strconv.Atoi(ports[1])
+	if endErr != nil {
 		fmt.Printf("end port is not a number")
-		panic(end_err)
+		panic(endErr)
 	}
-	var open_ports []int
+	var openPorts []int
 
-	for i := 0; i < cap(ports_chan); i++ {
-		go worker(host, ports_chan, results_chan)
+	for i := 0; i < cap(portsChan); i++ {
+		go worker(host, portsChan, resultsChan)
 	}
 
 	go func() {
-		for i := start_port; i < end_port; i++ {
-			ports_chan <- i
+		for i := startPort; i < endPort; i++ {
+			portsChan <- i
 		}
 	}()
 
-	for i := start_port; i < end_port; i++ {
-		port := <-results_chan
+	for i := startPort; i < endPort; i++ {
+		port := <-resultsChan
 		if port != 0 {
-			open_ports = append(open_ports, port)
+			openPorts = append(openPorts, port)
 		}
 	}
 
-	close(ports_chan)
-	close(results_chan)
-	sort.Ints(open_ports)
-	for _, port := range open_ports {
+	close(portsChan)
+	close(resultsChan)
+	sort.Ints(openPorts)
+	for _, port := range openPorts {
 		fmt.Printf("%d open\n", port)
 	}
 }
