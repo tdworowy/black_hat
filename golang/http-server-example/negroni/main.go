@@ -42,6 +42,7 @@ func hello(w http.ResponseWriter, r *http.Request) {
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/hello", hello).Methods("GET")
+	
 	n := negroni.Classic()
 	n.Use(&trivial{})
 	n.Use(&badAuth{Username: "admin", Password: "password"})
