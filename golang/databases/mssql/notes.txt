@@ -1,0 +1,8 @@
+docker run --name mssql1 -p 1433:1433 -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=1Secure*Password1' -d mcr.microsoft.com/mssql/server
+
+docker exec -it mssql1 /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P '1Secure*Password1'
+create database store;
+go
+use store;
+create table transactions(ccnum varchar(32), date date, amount decimal(7,2), cvv char(4), exp date);
+go

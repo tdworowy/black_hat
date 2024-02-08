@@ -1,0 +1,6 @@
+docker run --name postgres1 -p 5432:5432 -e POSTGRES_PASSWORD=password -d postgres
+
+docker run -it --link postgres1:postgres postgres psql -h postgres -U postgres
+create database store;
+\connect store
+create table transactions(ccnum varchar(32), date date, amount money, cvv char(4), exp date);

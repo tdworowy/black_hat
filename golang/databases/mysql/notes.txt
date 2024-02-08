@@ -1,0 +1,7 @@
+docker run --name mysql1 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password -d mysql
+
+docker run -it --link mysql1:mysql --rm mysql sh -c 'exec mysql -h "$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
+
+create database store;
+use store;
+create table transactions(ccnum varchar(32), date date, amount float(7,2), cvv char(4), exp date);
