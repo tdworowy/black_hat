@@ -1,3 +1,5 @@
 docker run --name mongo1 -p 27017:27017 mongo
 
 docker run -it --link mongo1:mongo --rm mongo sh -c 'exec mongosh "$MONGO_PORT_27017_TCP_ADDR:$MONGO_PORT_27017_TCP_PORT/store"'
+
+docker run -it --link mongo1:mongo --rm mongo sh -c 'exec echo "$MONGO_PORT_27017_TCP_ADDR:$MONGO_PORT_27017_TCP_PORT/store"'
