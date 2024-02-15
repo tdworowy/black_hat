@@ -17,7 +17,7 @@ type MongoMiner struct {
 	Context context.Context
 }
 
-func new(host string) (*MongoMiner, error) {
+func New(host string) (*MongoMiner, error) {
 	m := MongoMiner{Host: host}
 	err := m.connect()
 	if err != nil {
@@ -27,14 +27,12 @@ func new(host string) (*MongoMiner, error) {
 }
 
 func (m *MongoMiner) connect() error {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(m.Host))
-	defer func() {
-		if err = client.Disconnect(ctx); err != nil {
-			panic(err)
-		}
-	}()
+
+	if err != nil {
+		panic(err)
+	}
 	m.Context = ctx
 	m.Client = client
 	return nil
@@ -42,7 +40,7 @@ func (m *MongoMiner) connect() error {
 }
 
 func (m *MongoMiner) GetSchema() (*dbminer.Schema, error) {
-	var s = new(dbminer.Schema) // how to fix it ?
+	var s = new(dbminer.Schema)
 
 	dbnames, err := m.Client.ListDatabaseNames(m.Context, bson.D{})
 	if err != nil {
@@ -58,33 +56,37 @@ func (m *MongoMiner) GetSchema() (*dbminer.Schema, error) {
 
 		for _, collection := range collections {
 			table := dbminer.Table{Name: collection, Columns: []string{}}
-
-			var docRaw bson.Raw
-			_, err := m.Client.Database(dbname).Collection(collection).Find(m.Context, bson.D{})
+			cur, err := m.Client.Database(dbname).Collection(collection).Find(m.Context, bson.D{})
 			if err != nil {
 				return nil, err
 			}
 
-			var doc bson.Raw
-			if err := docRaw.Unmarshal(&doc); err != nil { // how to fix it ?
+			defer cur.Close(m.Context)
+			for cur.Next(m.Context) {
+				var f dbminer.Table
+				err := cur.Decode(&f)
 				if err != nil {
 					return nil, err
 				}
-			}
-
-			for _, f := range doc {
-				table.Columns = append(table.Columns, f.Name) // how to fix it ?
+				table.Columns = append(table.Columns, f.Name)
 			}
 			db.Tables = append(db.Tables, table)
 		}
 		s.Databases = append(s.Databases, db)
 	}
 	return s, nil
-}
+} // TODO somethin is wrong
 
 func main() {
 
-	mm, err := new(os.Args[1])
+	var addr string
+	if len(os.Args) > 1 {
+		addr = os.Args[1]
+	} else {
+		addr = "mongodb://localhost:27017"
+	}
+
+	mm, err := New(addr)
 	if err != nil {
 		panic(err)
 	}
