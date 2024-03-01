@@ -1,1 +1,1 @@
-code examples based  on book: [Black Hat Go: Go Programming For Hackers and Pentesters](https://www.amazon.com/Black-Hat-Go-Programming-Pentesters-ebook/dp/B073NPY29N/ref=tmm_kin_swatch_0?_encoding=UTF8&qid=&sr=) by Tom Steele, Chris Patten and Dan Kottmann
+code examples based on book: [Black Hat Go: Go Programming For Hackers and Pentesters](https://www.amazon.com/Black-Hat-Go-Programming-Pentesters-ebook/dp/B073NPY29N/ref=tmm_kin_swatch_0?_encoding=UTF8&qid=&sr=) by Tom Steele, Chris Patten and Dan Kottmann
