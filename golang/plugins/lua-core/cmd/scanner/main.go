@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -105,11 +104,22 @@ func main() {
 		err   error
 		f     string
 	)
+
 	l = lua.NewState()
 	defer l.Close()
 	register(l)
-	if files, err = ioutil.ReadDir(PluginsDir); err != nil {
+
+	filesInDir, err := os.ReadDir(PluginsDir)
+	if err != nil {
 		log.Fatalln(err)
+	}
+
+	for _, file := range filesInDir {
+		fileInfo, err := file.Info()
+		if err != nil {
+			log.Fatalln(err)
+		}
+		files = append(files, fileInfo)
 	}
 
 	for idx := range files {
