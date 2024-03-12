@@ -1,0 +1,3 @@
+protoc -I . implant.proto --go_out=plugins=grpc:./  <- don't work
+
+protoc -I . implant.proto --go_out=. --go-grpc_out=.
